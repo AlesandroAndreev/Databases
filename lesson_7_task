@@ -1,0 +1,76 @@
+USE lesson_5;
+
+SHOW TABLES;
+
+SELECT*FROM orders; 
+SELECT*FROM users;
+SELECT*FROM products;
+SELECT*FROM catalogs;
+
+INSERT INTO orders (user_id, created_at, updated_at) VALUES
+  (1, NOW(),NOW()),
+  (1, NOW(),NOW()),
+  (1, NOW(),NOW()),
+  (2, NOW(),NOW()),
+  (3, NOW(),NOW()),
+  (3, NOW(),NOW());
+
+ 
+SELECT*FROM users WHERE id IN (SELECT user_id FROM orders); #Задание_1, вариант_1
+SELECT us.name,od.user_id FROM users AS us JOIN orders AS od ON us.id = od.user_id;#Задание_1, вариант_2
+
+SELECT cat.name,pr.name FROM catalogs AS cat  JOIN products AS pr ON cat.id = pr.catalog_id;
+
+DROP TABLE IF EXISTS flights;
+CREATE TABLE flights (
+  id SERIAL PRIMARY KEY,
+  fromm VARCHAR(255),
+  too VARCHAR(255)
+); 
+
+INSERT INTO flights (fromm, too) VALUES
+  ("moscow", "omsk"),
+  ("novgorod","kazan"),
+  ("irkutsk","moscow"),
+  ("omsk","irkutsk"),
+  ("moscow","kazan");
+ 
+ DROP TABLE IF EXISTS cities;
+CREATE TABLE cities (
+  id SERIAL PRIMARY KEY,
+  label VARCHAR(255),
+  name VARCHAR(255)
+); 
+
+INSERT INTO cities (label, name) VALUES
+  ("moscow", "Москва"),
+  ("irkutsk","Иркутск"),
+  ("novgorod","Новгород"),
+  ("kazan","Казань"),
+  ("omsk","Омск");
+  
+ 
+SELECT*FROM flights; 
+SELECT*FROM cities;
+
+
+SELECT cities.name FROM cities 
+JOIN flights ON cities.label = flights.fromm;
+
+
+
+
+
+SELECT c.name,f.too FROM cities AS c
+JOIN flights AS f ON c.label = f.fromm
+
+SELECT c.name,f.too FROM cities AS c
+JOIN flights AS f ON c.label = f.too;
+
+SELECT one.name AS "From",two.name AS "To" FROM 
+(SELECT c.name,f.too FROM cities AS c JOIN flights AS f ON c.label = f.fromm) as one
+LEFT OUTER JOIN 
+(SELECT c.name,f.too FROM cities AS c JOIN flights AS f ON c.label = f.too) as two
+ON one.too = two.too;
+
+
